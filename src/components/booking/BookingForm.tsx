@@ -20,6 +20,7 @@ export function BookingForm() {
     }));
   }, [isLoaded, user]);
   const [errors, setErrors] = useState<Partial<BookingFormData>>({});
+  const [acknowledged, setAcknowledged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
@@ -104,10 +105,25 @@ export function BookingForm() {
           />
         </div>
 
+        <label className="flex items-start gap-3 cursor-pointer select-none rounded-lg border border-neutral-200 bg-neutral-50 p-4 hover:border-primary/30 transition-colors">
+          <input
+            type="checkbox"
+            checked={acknowledged}
+            onChange={e => setAcknowledged(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-primary"
+          />
+          <span className="text-sm text-neutral-600 leading-relaxed">
+            I understand that cancellations made less than{' '}
+            <span className="font-semibold text-neutral-800">24 hours</span>{' '}
+            before my appointment will incur the{' '}
+            <span className="font-semibold text-neutral-800">full cost of the service</span>.
+          </span>
+        </label>
+
         <button
           type="submit"
-          disabled={submitting}
-          className="mt-2 w-full bg-primary text-white rounded-lg py-3 text-sm font-semibold hover:bg-primary-hover transition-colors disabled:opacity-60"
+          disabled={submitting || !acknowledged}
+          className="mt-2 w-full bg-primary text-white rounded-lg py-3 text-sm font-semibold hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {submitting ? 'Confirming...' : 'Confirm Booking'}
         </button>
