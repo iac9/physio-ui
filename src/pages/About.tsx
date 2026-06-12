@@ -66,7 +66,7 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-12 items-start">
           {/* Photo placeholder */}
-          <div className="rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 aspect-[3/4] max-h-[480px] flex items-center justify-center border border-primary/10 sticky top-24">
+          <div className="rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 aspect-[3/4] max-h-[480px] flex items-center justify-center border border-primary/10">
             <div className="text-center text-neutral-400">
               <div className="w-24 h-24 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center text-4xl">👨‍⚕️</div>
               <p className="text-sm font-medium">Huy Hua</p>
@@ -128,7 +128,7 @@ export default function About() {
             <motion.p variants={fadeUp} className="text-primary font-medium text-sm tracking-wide uppercase mb-3">
               My Philosophy
             </motion.p>
-            <motion.blockquote variants={fadeUp} className="text-2xl sm:text-3xl font-bold text-neutral-900 leading-snug mb-6">
+            <motion.blockquote variants={fadeUp} className="text-2xl sm:text-3xl font-display font-bold text-neutral-900 leading-snug mb-6">
               "Movement is medicine. My goal is to give every patient the knowledge and ability to take control of their own health."
             </motion.blockquote>
             <motion.p variants={fadeUp} className="text-neutral-500 text-sm">— Huy Hua, Physiotherapist</motion.p>

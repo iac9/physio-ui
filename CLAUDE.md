@@ -46,7 +46,7 @@ Personal project. A physiotherapy website for Huy Hua, solo practitioner in Mitc
 
 1. Select service (Initial 60min/$130, Follow-up 30min/$90, Extended 45min/$115)
 2. Pick date (Mon–Fri only, no auto-advance on selection)
-3. Pick time slot (9am–5pm, 30-min intervals)
+3. Pick time slot (9am–7pm, 30-min intervals)
 4. Contact details — pre-filled from Clerk profile via `useUser()`; cancellation policy checkbox must be checked before submitting
 5. Confirmation screen
 

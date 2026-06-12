@@ -217,7 +217,7 @@ export default function BookAppointment() {
               <ul className="flex flex-col gap-2 text-sm text-neutral-600">
                 <li>📍 Mitcham, Victoria 3132</li>
                 <li>📞 (03) 1234 5678</li>
-                <li>🕐 Mon – Fri, 9:00 AM – 5:00 PM</li>
+                <li>🕐 Mon – Fri, 9:00 AM – 7:00 PM</li>
               </ul>
             </div>
             <div className="bg-primary-light rounded-2xl p-6">

@@ -54,7 +54,7 @@ seedMockBookings();
 function generateSlots(duration: number): string[] {
   const slots: string[] = [];
   const start = 9 * 60; // 9:00 AM
-  const end = 17 * 60;  // 5:00 PM
+  const end = 19 * 60;  // 7:00 PM
   for (let t = start; t + duration <= end; t += 30) {
     const h = String(Math.floor(t / 60)).padStart(2, '0');
     const m = String(t % 60).padStart(2, '0');

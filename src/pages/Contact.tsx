@@ -10,7 +10,7 @@ const contactInfo = [
     title: 'Phone',
     value: '(03) 1234 5678',
     href: 'tel:0312345678',
-    sub: 'Mon – Fri, 9 AM – 5 PM',
+    sub: 'Mon – Fri, 9 AM – 7 PM',
   },
   {
     icon: Mail,
@@ -29,7 +29,7 @@ const contactInfo = [
   {
     icon: Clock,
     title: 'Hours',
-    value: 'Mon – Fri: 9:00 AM – 5:00 PM',
+    value: 'Mon – Fri: 9:00 AM – 7:00 PM',
     href: undefined,
     sub: 'Closed weekends & public holidays',
   },

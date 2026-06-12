@@ -64,6 +64,6 @@ export const faqs: FAQItem[] = [
     id: '10',
     category: 'Location & Hours',
     question: 'Where are you located and what are your hours?',
-    answer: 'We are located in Mitcham, Victoria. The clinic is open Monday to Friday, 9:00 AM – 5:00 PM. Please contact us for the exact address and parking information.',
+    answer: 'We are located in Mitcham, Victoria. The clinic is open Monday to Friday, 9:00 AM – 7:00 PM. Please contact us for the exact address and parking information.',
   },
 ];

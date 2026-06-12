@@ -117,22 +117,22 @@ describe('BookingContext', () => {
   });
 
   describe('getAvailableSlots', () => {
-    it('generates slots spanning 9am–5pm with correct slot count for 60-min service', () => {
+    it('generates slots spanning 9am–7pm with correct slot count for 60-min service', () => {
       const { result } = renderHook(() => useBooking(), { wrapper });
-      // 9:00–17:00, step 30 min, 60-min duration → last slot at 16:00 → 15 slots
+      // 9:00–19:00, step 30 min, 60-min duration → last slot at 18:00 → 19 slots
       const slots = result.current.service.getAvailableSlots(DATE_A, SERVICE);
       const times = slots.map(s => s.time);
       expect(times[0]).toBe('09:00');
-      expect(times[times.length - 1]).toBe('16:00');
-      expect(slots.length).toBe(15);
+      expect(times[times.length - 1]).toBe('18:00');
+      expect(slots.length).toBe(19);
     });
 
     it('generates more slots for a shorter duration service', () => {
       const { result } = renderHook(() => useBooking(), { wrapper });
-      // 30-min service: last slot at 16:30 → 16 slots
+      // 30-min service: last slot at 18:30 → 20 slots
       const slots = result.current.service.getAvailableSlots(DATE_A, FOLLOWUP);
-      expect(slots.length).toBe(16);
-      expect(slots[slots.length - 1].time).toBe('16:30');
+      expect(slots.length).toBe(20);
+      expect(slots[slots.length - 1].time).toBe('18:30');
     });
 
     it('all slots are available for an unbooked far-future date', () => {
