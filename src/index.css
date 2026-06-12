@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
 
   --color-primary: #5d8e87;
   --color-primary-light: #e8f2f1;
@@ -48,4 +49,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+h1, h2, h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
 }
