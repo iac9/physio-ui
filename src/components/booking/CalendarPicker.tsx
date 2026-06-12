@@ -50,7 +50,13 @@ export function CalendarPicker() {
   return (
     <div>
       <h2 className="text-xl font-semibold text-neutral-900 mb-1">Select a Date</h2>
-      <p className="text-neutral-500 text-sm mb-6">Available Monday – Friday only.</p>
+      {state.date ? (
+        <p className="text-sm text-primary font-medium mb-6">
+          {new Date(state.date + 'T00:00:00').toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+        </p>
+      ) : (
+        <p className="text-neutral-500 text-sm mb-6">Available Monday – Friday only.</p>
+      )}
 
       <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
         {/* Header */}
@@ -107,11 +113,6 @@ export function CalendarPicker() {
         </div>
       </div>
 
-      {state.date && (
-        <p className="mt-3 text-sm text-primary font-medium">
-          Selected: {new Date(state.date + 'T00:00:00').toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
-      )}
     </div>
   );
 }

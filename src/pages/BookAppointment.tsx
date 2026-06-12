@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight, CalendarDays, Clock, ClipboardList } from 'lucide-react';
 import { SignInButton, Show } from '@clerk/react';
@@ -95,6 +96,33 @@ function BookingContent() {
   return (
     <div>
       {step < 5 && <StepIndicator />}
+
+      {/* Navigation arrows — hidden on confirmation screen */}
+      {step < 5 && (canGoBack || canGoForward) && (
+        <div className="flex items-center justify-between mb-6 pb-5 border-b border-neutral-100">
+          {canGoBack ? (
+            <button
+              onClick={() => setStep((step - 1) as BookingStep)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-900 transition-colors shadow-sm"
+            >
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+          ) : (
+            <span />
+          )}
+          {canGoForward ? (
+            <button
+              onClick={() => setStep((step + 1) as BookingStep)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors shadow-sm"
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <span />
+          )}
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -106,32 +134,6 @@ function BookingContent() {
           {panels[step]}
         </motion.div>
       </AnimatePresence>
-
-      {/* Navigation arrows — hidden on confirmation screen */}
-      {step < 5 && (canGoBack || canGoForward) && (
-        <div className="flex items-center justify-between mt-8 pt-5 border-t border-neutral-100">
-          {canGoBack ? (
-            <button
-              onClick={() => setStep((step - 1) as BookingStep)}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-neutral-800 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
-          ) : (
-            <span />
-          )}
-          {canGoForward ? (
-            <button
-              onClick={() => setStep((step + 1) as BookingStep)}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
-            >
-              Next <ChevronRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <span />
-          )}
-        </div>
-      )}
     </div>
   );
 }
@@ -173,9 +175,19 @@ function BookingSignInPrompt() {
   );
 }
 
+function BookingReset() {
+  const { state, reset } = useBooking();
+  useEffect(() => {
+    if (state.confirmedBooking) reset();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
 export default function BookAppointment() {
   return (
     <>
+    <BookingReset />
     <section className="bg-gradient-to-br from-primary-light to-bg py-12 md:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="max-w-lg">

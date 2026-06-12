@@ -147,7 +147,6 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     ...s,
     date,
     time: s.date === date ? s.time : null,
-    step: 3,
   }));
   // selectTime only saves the selection — navigation to step 4 is via the Confirm button
   const selectTime = (time: string) => setState(s => ({ ...s, time }));

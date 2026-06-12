@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@clerk/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarDays, Clock, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
+import { CalendarDays, Clock, ChevronLeft, ChevronRight, Check, X, AlertTriangle } from 'lucide-react';
 import { useBooking } from '../context/BookingContext';
 import type { Booking, TimeSlot } from '../types/booking';
 
@@ -24,6 +24,80 @@ function formatTime(t: string) {
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
+
+// ── Cancel Confirmation Modal ─────────────────────────────────────────────────
+
+interface CancelModalProps {
+  booking: Booking;
+  onConfirm: () => void;
+  onClose: () => void;
+}
+
+function isWithin24Hours(date: string, time: string) {
+  const appt = new Date(`${date}T${time}:00`);
+  return appt.getTime() - Date.now() < 24 * 60 * 60 * 1000;
+}
+
+function CancelModal({ booking, onConfirm, onClose }: CancelModalProps) {
+  const lateCancel = isWithin24Hours(booking.date, booking.time);
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Dialog */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 8 }}
+        transition={{ duration: 0.15 }}
+        className="relative bg-white rounded-2xl shadow-xl border border-neutral-200 p-6 w-full max-w-sm"
+      >
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-500" />
+          </div>
+
+          <div>
+            <h3 className="text-base font-semibold text-neutral-900 mb-1">Cancel appointment?</h3>
+            <p className="text-sm text-neutral-500 leading-relaxed">
+              You're about to cancel your{' '}
+              <span className="font-medium text-neutral-700">{booking.service.name}</span> on{' '}
+              <span className="font-medium text-neutral-700">{formatDate(booking.date)}</span> at{' '}
+              <span className="font-medium text-neutral-700">{formatTime(booking.time)}</span>.
+            </p>
+            {lateCancel && (
+              <p className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mt-2">
+                This appointment is within 24 hours. Cancellation may incur the full cost of the service.
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-2 w-full pt-1">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-900 transition-colors"
+            >
+              Keep appointment
+            </button>
+            <button
+              onClick={onConfirm}
+              className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Yes, cancel
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 // ── Inline Reschedule Panel ───────────────────────────────────────────────────
 
@@ -288,6 +362,7 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<Tab>('upcoming');
   const [rescheduleId, setRescheduleId] = useState<string | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
 
   useEffect(() => {
     if (!userId) { navigate('/book'); return; }
@@ -303,10 +378,16 @@ export default function MyBookings() {
     .sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
 
   function handleCancel(id: string) {
-    if (!window.confirm('Cancel this appointment?')) return;
-    bookingService.cancelBooking(id);
-    setBookings(prev => prev.filter(b => b.id !== id));
-    if (rescheduleId === id) setRescheduleId(null);
+    const booking = bookings.find(b => b.id === id);
+    if (booking) setCancelTarget(booking);
+  }
+
+  function confirmCancel() {
+    if (!cancelTarget) return;
+    bookingService.cancelBooking(cancelTarget.id);
+    setBookings(prev => prev.filter(b => b.id !== cancelTarget.id));
+    if (rescheduleId === cancelTarget.id) setRescheduleId(null);
+    setCancelTarget(null);
   }
 
   function handleConfirmReschedule(id: string, date: string, time: string) {
@@ -404,6 +485,16 @@ export default function MyBookings() {
           </AnimatePresence>
         </div>
       </section>
+
+      <AnimatePresence>
+        {cancelTarget && (
+          <CancelModal
+            booking={cancelTarget}
+            onConfirm={confirmCancel}
+            onClose={() => setCancelTarget(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
