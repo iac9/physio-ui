@@ -13,6 +13,7 @@ export interface TimeSlot {
 
 export interface Booking {
   id: string;
+  userId: string;
   service: Service;
   date: string; // "YYYY-MM-DD"
   time: string;
@@ -45,4 +46,7 @@ export interface BookingServiceInterface {
   getAvailableSlots(date: string, service: Service): TimeSlot[];
   createBooking(data: Omit<Booking, 'id'>): Promise<Booking>;
   getBookings(): Booking[];
+  getBookingsByUser(userId: string): Booking[];
+  cancelBooking(id: string): void;
+  rescheduleBooking(id: string, date: string, time: string): Booking;
 }

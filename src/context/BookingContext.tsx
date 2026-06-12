@@ -88,6 +88,21 @@ const inMemoryBookingService: BookingServiceInterface = {
   },
 
   getBookings: () => bookings,
+
+  getBookingsByUser: (userId: string): Booking[] =>
+    bookings.filter(b => b.userId === userId),
+
+  cancelBooking: (id: string): void => {
+    bookings = bookings.filter(b => b.id !== id);
+  },
+
+  rescheduleBooking: (id: string, date: string, time: string): Booking => {
+    const updated = bookings.map(b => b.id === id ? { ...b, date, time } : b);
+    bookings = updated;
+    const booking = updated.find(b => b.id === id);
+    if (!booking) throw new Error(`Booking ${id} not found`);
+    return booking;
+  },
 };
 
 // Context

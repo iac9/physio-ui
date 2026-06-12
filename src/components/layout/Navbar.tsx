@@ -59,6 +59,9 @@ export function Navbar() {
             </SignInButton>
           </Show>
           <Show when="signed-in">
+            <NavLink to="/my-bookings" className={navLinkClass}>
+              My Bookings
+            </NavLink>
             <UserButton />
           </Show>
           <Button href="/book" size="sm">Book Now</Button>
@@ -92,6 +95,19 @@ export function Navbar() {
               {l.label}
             </NavLink>
           ))}
+          <Show when="signed-in">
+            <NavLink
+              to="/my-bookings"
+              className={({ isActive }) =>
+                `block py-3 text-sm font-medium border-b border-neutral-50 transition-colors ${
+                  isActive ? 'text-primary' : 'text-neutral-700'
+                }`
+              }
+              onClick={() => setMenuOpen(false)}
+            >
+              My Bookings
+            </NavLink>
+          </Show>
           <div className="mt-3 flex items-center justify-between gap-3">
             <Show when="signed-out">
               <SignInButton mode="modal">

@@ -143,6 +143,7 @@ describe('BookingContext', () => {
       const { result } = renderHook(() => useBooking(), { wrapper });
       await act(async () => {
         await result.current.service.createBooking({
+          userId: 'test-user',
           service: SERVICE,
           date: DATE_B,
           time: '11:00',

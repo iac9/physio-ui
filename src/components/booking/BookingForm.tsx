@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth, useUser } from '@clerk/react';
 import { useBooking } from '../../context/BookingContext';
 import type { BookingFormData } from '../../types/booking';
 
 export function BookingForm() {
   const { state, setFormData, confirmBooking, service: bookingService } = useBooking();
+  const { userId } = useAuth();
+  const { user, isLoaded } = useUser();
   const [form, setForm] = useState<BookingFormData>(state.formData);
+
+  // Pre-fill from Clerk profile for empty fields only (preserves any manual edits)
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+    setForm(f => ({
+      clientName: f.clientName || [user.firstName, user.lastName].filter(Boolean).join(' '),
+      email: f.email || user.primaryEmailAddress?.emailAddress || '',
+      phone: f.phone || user.primaryPhoneNumber?.phoneNumber || '',
+      notes: f.notes,
+    }));
+  }, [isLoaded, user]);
   const [errors, setErrors] = useState<Partial<BookingFormData>>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -26,6 +40,7 @@ export function BookingForm() {
     setFormData(form);
     try {
       const booking = await bookingService.createBooking({
+        userId: userId ?? 'guest',
         service: state.service!,
         date: state.date!,
         time: state.time!,

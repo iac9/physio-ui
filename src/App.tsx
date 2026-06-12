@@ -10,6 +10,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
+import MyBookings from './pages/MyBookings';
 import NotFound from './pages/NotFound';
 
 const router = createBrowserRouter([
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: 'blog/:slug', element: <BlogPost /> },
       { path: 'faq', element: <FAQ /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'my-bookings', element: <MyBookings /> },
       { path: '*', element: <NotFound /> },
     ],
   },

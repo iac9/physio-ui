@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight, CalendarDays, Clock, ClipboardList } from 'lucide-react';
 import { SignInButton, Show } from '@clerk/react';
-import { BookingProvider, useBooking } from '../context/BookingContext';
+import { useBooking } from '../context/BookingContext';
 import type { BookingStep } from '../types/booking';
 import { ServiceSelect } from '../components/booking/ServiceSelect';
 import { CalendarPicker } from '../components/booking/CalendarPicker';
@@ -175,8 +175,8 @@ function BookingSignInPrompt() {
 
 export default function BookAppointment() {
   return (
-    <BookingProvider>
-      <section className="bg-gradient-to-br from-primary-light to-bg py-12 md:py-16">
+    <>
+    <section className="bg-gradient-to-br from-primary-light to-bg py-12 md:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="max-w-lg">
             <p className="text-primary font-medium text-sm tracking-wide uppercase mb-2">Booking</p>
@@ -220,6 +220,6 @@ export default function BookAppointment() {
           </div>
         </div>
       </section>
-    </BookingProvider>
+    </>
   );
 }
