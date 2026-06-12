@@ -120,9 +120,22 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<BookingState>(DEFAULT_STATE);
 
   const setStep = (step: BookingStep) => setState(s => ({ ...s, step }));
-  const selectService = (service: Service) => setState(s => ({ ...s, service, date: null, time: null, step: 2 }));
-  const selectDate = (date: string) => setState(s => ({ ...s, date, time: null, step: 3 }));
-  const selectTime = (time: string) => setState(s => ({ ...s, time, step: 4 }));
+  // Only clear downstream data when the selection actually changes
+  const selectService = (service: Service) => setState(s => ({
+    ...s,
+    service,
+    date: s.service?.id === service.id ? s.date : null,
+    time: s.service?.id === service.id ? s.time : null,
+    step: 2,
+  }));
+  const selectDate = (date: string) => setState(s => ({
+    ...s,
+    date,
+    time: s.date === date ? s.time : null,
+    step: 3,
+  }));
+  // selectTime only saves the selection — navigation to step 4 is via the Confirm button
+  const selectTime = (time: string) => setState(s => ({ ...s, time }));
   const setFormData = (formData: BookingFormData) => setState(s => ({ ...s, formData }));
   const confirmBooking = (booking: Booking) => setState(s => ({ ...s, confirmedBooking: booking, step: 5 }));
   const reset = () => setState(DEFAULT_STATE);

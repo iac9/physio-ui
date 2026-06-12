@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { BookingProvider, useBooking } from '../context/BookingContext';
+import type { BookingStep } from '../types/booking';
 import { ServiceSelect } from '../components/booking/ServiceSelect';
 import { CalendarPicker } from '../components/booking/CalendarPicker';
 import { TimeSlotGrid } from '../components/booking/TimeSlotGrid';
@@ -15,37 +16,55 @@ const STEPS = [
   { n: 5, label: 'Confirm' },
 ];
 
+// A step is reachable if all prior steps have data
+function useStepReachable() {
+  const { state } = useBooking();
+  return (n: number) => {
+    if (n === 1) return true;
+    if (n === 2) return state.service != null;
+    if (n === 3) return state.date != null;
+    if (n === 4) return state.time != null;
+    if (n === 5) return state.confirmedBooking != null;
+    return false;
+  };
+}
+
 function StepIndicator() {
   const { state, setStep } = useBooking();
+  const isReachable = useStepReachable();
   const current = state.step;
+
+  // A step has data regardless of whether it's before or after the current step
+  const hasData = (n: number) => isReachable(n + 1) || (n === 4 && state.confirmedBooking != null);
 
   return (
     <div className="flex items-center justify-center mb-10 overflow-x-auto pb-2">
       {STEPS.map((s, i) => {
-        const done = current > s.n;
+        const filled = hasData(s.n) && s.n !== current;
         const active = current === s.n;
+        const clickable = isReachable(s.n) && s.n !== current;
         return (
           <div key={s.n} className="flex items-center">
             <button
-              onClick={() => done ? setStep(s.n as 1|2|3|4|5) : undefined}
-              disabled={!done}
-              className={`flex items-center gap-2 ${done ? 'cursor-pointer' : 'cursor-default'}`}
+              onClick={() => clickable ? setStep(s.n as BookingStep) : undefined}
+              disabled={!clickable}
+              className={`flex items-center gap-2 ${clickable ? 'cursor-pointer' : 'cursor-default'}`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-                done
-                  ? 'bg-primary text-white'
-                  : active
+                active
                   ? 'bg-primary text-white ring-4 ring-primary/20'
+                  : filled
+                  ? 'bg-primary text-white'
                   : 'bg-neutral-200 text-neutral-400'
               }`}>
-                {done ? <Check className="w-4 h-4" /> : s.n}
+                {filled ? <Check className="w-4 h-4" /> : s.n}
               </div>
-              <span className={`text-sm hidden sm:block ${active ? 'text-neutral-900 font-medium' : done ? 'text-primary' : 'text-neutral-400'}`}>
+              <span className={`text-sm hidden sm:block ${active ? 'text-neutral-900 font-medium' : filled ? 'text-primary' : 'text-neutral-400'}`}>
                 {s.label}
               </span>
             </button>
             {i < STEPS.length - 1 && (
-              <div className={`w-8 sm:w-12 h-0.5 mx-1 sm:mx-2 transition-colors ${done || (active && current > s.n) ? 'bg-primary' : 'bg-neutral-200'}`} />
+              <div className={`w-8 sm:w-12 h-0.5 mx-1 sm:mx-2 transition-colors ${hasData(s.n) ? 'bg-primary' : 'bg-neutral-200'}`} />
             )}
           </div>
         );
@@ -55,7 +74,9 @@ function StepIndicator() {
 }
 
 function BookingContent() {
-  const { state } = useBooking();
+  const { state, setStep } = useBooking();
+  const isReachable = useStepReachable();
+  const step = state.step;
 
   const panels: Record<number, React.ReactNode> = {
     1: <ServiceSelect />,
@@ -65,20 +86,51 @@ function BookingContent() {
     5: <BookingConfirmation />,
   };
 
+  // Left arrow: go back (steps 2–4)
+  const canGoBack = step > 1 && step < 5;
+  // Right arrow: go forward (steps 1–3; step 4 uses form submit)
+  const canGoForward = step < 4 && isReachable(step + 1);
+
   return (
     <div>
-      {state.step < 5 && <StepIndicator />}
+      {step < 5 && <StepIndicator />}
       <AnimatePresence mode="wait">
         <motion.div
-          key={state.step}
+          key={step}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.2 }}
         >
-          {panels[state.step]}
+          {panels[step]}
         </motion.div>
       </AnimatePresence>
+
+      {/* Navigation arrows — hidden on confirmation screen */}
+      {step < 5 && (canGoBack || canGoForward) && (
+        <div className="flex items-center justify-between mt-8 pt-5 border-t border-neutral-100">
+          {canGoBack ? (
+            <button
+              onClick={() => setStep((step - 1) as BookingStep)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-neutral-800 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+          ) : (
+            <span />
+          )}
+          {canGoForward ? (
+            <button
+              onClick={() => setStep((step + 1) as BookingStep)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <span />
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -61,6 +61,7 @@ export function TimeSlotGrid() {
           <span className="w-3 h-3 rounded bg-neutral-100 border border-neutral-200 inline-block" /> Unavailable
         </span>
       </div>
+
     </div>
   );
 }

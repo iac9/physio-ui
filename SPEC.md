@@ -52,9 +52,11 @@ Multi-step booking flow, UI only with in-memory mock data. Clean `BookingService
 |------|-----------|-------------|
 | 1 | **ServiceSelect** | Cards showing available services with durations (Initial Consult 60min, Follow-up 30min, Extended Rehab 45min) |
 | 2 | **CalendarPicker** | Monthly calendar widget, weekends disabled, navigate between months |
-| 3 | **TimeSlotGrid** | Available time slots for selected date (Mon–Fri 9am–5pm), slot size matches service duration, mock-booked slots shown as unavailable |
+| 3 | **TimeSlotGrid** | Available time slots for selected date (Mon–Fri 9am–5pm), slot size matches service duration, mock-booked slots shown as unavailable. User selects a slot then clicks Next → to proceed. |
 | 4 | **BookingForm** | Client details: name, email, phone, optional notes |
 | 5 | **BookingConfirmation** | Summary of booking details + success message |
+
+**Navigation**: ← Back and Next → arrow buttons appear at the bottom of the booking panel. Back is available on steps 2–4; Next is available on steps 1–3 when the current step has a selection. Step 4 advances only via form submission. Navigating between steps does not clear previously entered data (only selecting a *different* service clears date/time; selecting a *different* date clears the time).
 
 **Data layer**: In-memory store via React Context. Exposes a `BookingService` interface so a real backend can be swapped in without touching UI components.
 
