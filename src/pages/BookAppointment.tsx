@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, CalendarDays, Clock, ClipboardList } from 'lucide-react';
+import { SignInButton, Show } from '@clerk/react';
 import { BookingProvider, useBooking } from '../context/BookingContext';
 import type { BookingStep } from '../types/booking';
 import { ServiceSelect } from '../components/booking/ServiceSelect';
@@ -135,6 +136,43 @@ function BookingContent() {
   );
 }
 
+function BookingSignInPrompt() {
+  return (
+    <div className="py-8 text-center flex flex-col items-center">
+      <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center mb-5">
+        <CalendarDays className="w-7 h-7 text-primary" />
+      </div>
+      <h2 className="text-xl font-semibold text-neutral-900 mb-2">Sign in to book your appointment</h2>
+      <p className="text-neutral-500 text-sm max-w-sm mb-8 leading-relaxed">
+        Create a free account or sign in to book, manage and keep track of your appointments.
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+        <SignInButton mode="modal">
+          <button className="bg-primary text-white rounded-lg px-6 py-2.5 text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm">
+            Sign in / Create account
+          </button>
+        </SignInButton>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 w-full max-w-sm border-t border-neutral-100 pt-8 text-xs text-neutral-400">
+        <div className="flex flex-col items-center gap-2">
+          <CalendarDays className="w-5 h-5 text-primary/60" />
+          <span>Easy booking</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <Clock className="w-5 h-5 text-primary/60" />
+          <span>Appointment reminders</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <ClipboardList className="w-5 h-5 text-primary/60" />
+          <span>Booking history</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function BookAppointment() {
   return (
     <BookingProvider>
@@ -152,7 +190,12 @@ export default function BookAppointment() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-[1fr_360px] gap-10 items-start">
           {/* Main booking panel */}
           <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-8 shadow-sm">
-            <BookingContent />
+            <Show when="signed-out">
+              <BookingSignInPrompt />
+            </Show>
+            <Show when="signed-in">
+              <BookingContent />
+            </Show>
           </div>
 
           {/* Sidebar info */}

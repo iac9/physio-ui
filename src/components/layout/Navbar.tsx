@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { SignInButton, Show, UserButton } from '@clerk/react';
 import { Button } from '../ui/Button';
 
 const links = [
@@ -49,7 +50,17 @@ export function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-3">
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <button className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors">
+                Sign in
+              </button>
+            </SignInButton>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
           <Button href="/book" size="sm">Book Now</Button>
         </div>
 
@@ -81,9 +92,24 @@ export function Navbar() {
               {l.label}
             </NavLink>
           ))}
-          <Button href="/book" size="sm" className="mt-2 w-full justify-center" onClick={() => setMenuOpen(false)}>
-            Book Now
-          </Button>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button
+                  className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+            <Button href="/book" size="sm" className="flex-1 justify-center" onClick={() => setMenuOpen(false)}>
+              Book Now
+            </Button>
+          </div>
         </div>
       )}
     </header>
