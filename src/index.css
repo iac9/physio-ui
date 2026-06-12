@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-primary: #5d8e87;
+  --color-primary-light: #e8f2f1;
+  --color-primary-dark: #3d6e67;
+  --color-primary-hover: #4d7e77;
+
+  /* Warm cream page background — used in gradients and section fills */
+  --color-bg: #f5f0eb;
+
+  --color-neutral-50: #f0ebe5;
+  --color-neutral-100: #e6dfd8;
+  --color-neutral-200: #d9d1c9;
+  --color-neutral-300: #c4bbb1;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1f2937;
+  background: #f5f0eb;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
